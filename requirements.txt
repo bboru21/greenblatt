@@ -1,0 +1,5 @@
+simple-settings
+beautifulsoup4
+bs4
+requests
+selenium

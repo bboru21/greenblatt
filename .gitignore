@@ -1,0 +1,7 @@
+csv/*
+virtualenv/*
+chromedriver*
+*.pyc
+*local.py
+dummy*
+.DS_Store

@@ -1,0 +1,3 @@
+EMAIL = ''
+PASSWORD = ''
+MIN_MARKET_CAP = None
