@@ -16,7 +16,7 @@ import datetime
 
 CHROMEDRIVER_PATH = '%s/chromedriver' % os.path.dirname(os.path.realpath(__file__))
 
-MIN_MARKET_CAP = settings.MIN_MARKET_CAP if settings.MIN_MARKET_CAP else random.randint(30,100)
+MIN_MARKET_CAP = settings.MIN_MARKET_CAP if settings.MIN_MARKET_CAP else random.randint(50,100)
 
 COLUMN_NAMES = [
     "company_name",
