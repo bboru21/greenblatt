@@ -5,3 +5,4 @@ chromedriver*
 *local.py
 dummy*
 .DS_Store
+README-local.md
