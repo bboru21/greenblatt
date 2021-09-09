@@ -6,4 +6,7 @@ if [[ ! -e settings_local.py ]]; then
     echo 'from settings_base import *' > settings_local.py
 fi
 
-virtualenv virtualenv --no-site-packages && source virtualenv/bin/activate && pip install -r requirements.txt
+python3 -m venv venv && \
+    source venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt

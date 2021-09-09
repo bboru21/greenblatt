@@ -101,4 +101,4 @@ html = get_stock_table_html()
 stocks = parse_markup(html)
 file_name = write_to_csv(stocks)
 
-print 'stocks downloaded as csv/%s' % file_name
+print('stocks downloaded as csv/%s' % file_name)

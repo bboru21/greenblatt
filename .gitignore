@@ -1,5 +1,5 @@
 csv/*
-virtualenv/*
+venv/*
 chromedriver*
 *.pyc
 *local.py
