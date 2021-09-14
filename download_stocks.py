@@ -1,22 +1,22 @@
 import os
-import sys
-
 from simple_settings import settings
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 from bs4 import BeautifulSoup
 import random
-
-import csv
 import datetime
+import pandas
 
-CHROMEDRIVER_PATH = '%s/chromedriver' % os.path.dirname(os.path.realpath(__file__))
+CHROMEDRIVER_PATH = '%s/chromedriver' % os.path.dirname(
+    os.path.realpath(__file__)
+)
 
-MIN_MARKET_CAP = settings.MIN_MARKET_CAP if settings.MIN_MARKET_CAP else random.randint(50,100)
+if settings.MIN_MARKET_CAP:
+    MIN_MARKET_CAP = settings.MIN_MARKET_CAP
+else:
+    MIN_MARKET_CAP = random.randint(50, 100)
 
 COLUMN_NAMES = [
     "company_name",
@@ -25,6 +25,7 @@ COLUMN_NAMES = [
     "price_from",
     "most_recent_quarter_data",
 ]
+
 
 def get_stock_table_html():
 
@@ -59,46 +60,59 @@ def get_stock_table_html():
 
     return table_html
 
+
 def parse_markup(html):
 
-    stocks = []
+    stocks = {}
 
     soup = BeautifulSoup(html, 'html.parser')
 
     rows = soup.find_all('tr')
-    stocks = []
+
     for row in rows:
         columns = row.find_all('td')
 
-        stock = {}
         cursor = 0
         for column in columns:
             column_name = COLUMN_NAMES[cursor]
-            stock[column_name] = column.text.strip()
-            cursor = cursor+1
 
-        stocks.append(stock)
+            if column_name not in stocks:
+                stocks[column_name] = []
+            stocks[column_name].append(column.text.strip())
+            cursor = cursor+1
 
     return stocks
 
+
 def write_to_csv(stocks):
 
-    file_name = 'mfi_%s_min-market-cap-%s.csv' % ( datetime.datetime.now().strftime('%Y-%m-%dT%H-%M-%S'), MIN_MARKET_CAP)
+    df = pandas.DataFrame.from_dict(stocks)
+
+    usn_urls = []
+    yahoo_urls = []
+    for value in df['ticker']:
+        ticker = value.lower()
+        usn_urls.append(f'https://money.usnews.com/investing/stocks/{ticker}/')
+        yahoo_urls.append(f'https://finance.yahoo.com/quote/{ticker}')
+
+    df['us_news_url'] = usn_urls
+    df['yahoo_url'] = yahoo_urls
+
+    filename = 'mfi_%s_min-market-cap-%s.csv' % (
+        datetime.datetime.now().strftime('%Y-%m-%dT%H-%M-%S'),
+        MIN_MARKET_CAP
+    )
 
     if not os.path.exists('csv'):
         os.makedirs('csv')
 
-    with open('csv/%s' % file_name, mode='w') as csv_file:
+    df.to_csv(f'{settings.BASE_DIR}/csv/{filename}')
 
-        writer = csv.DictWriter(csv_file, fieldnames=COLUMN_NAMES)
-        writer.writeheader()
-        for stock in stocks:
-            writer.writerow(stock)
+    return filename
 
-    return file_name
 
 html = get_stock_table_html()
 stocks = parse_markup(html)
-file_name = write_to_csv(stocks)
+filename = write_to_csv(stocks)
 
-print('stocks downloaded as csv/%s' % file_name)
+print('stocks downloaded as csv/%s' % filename)

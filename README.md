@@ -22,6 +22,8 @@ The solution is to make Mac OS trust chromedriver binary:
 `source venv/bin/activate`
 
 ## Download Stock Prices as CSV File
-`python download_stocks.py --settings=settings_local`
+Download the Magic Formula Investing screen:
+
+    python download_stocks.py --settings=settings_local
 
 Stock information should now be available within the newly created csv/ directory.

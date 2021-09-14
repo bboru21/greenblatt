@@ -6,3 +6,4 @@ chromedriver*
 dummy*
 .DS_Store
 README-local.md
+scraper/scraper/spiders/html/*.html
